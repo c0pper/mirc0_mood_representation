@@ -4,7 +4,28 @@ from classes import Pratica
 import matplotlib.pyplot as plt
 
 
-def get_labels_value(data_list, row):
+def get_labels_value(data_list: list, row: int):
+    """
+    Extracts the category labels and values for two speakers from a call's data.
+
+    :param data_list: A list of CallData objects, each containing call data.
+    :param row: An integer representing the row number of the call data to extract.
+
+    :return: A tuple containing the following five items:
+             - A list of category labels for speaker1.
+             - A list of category values for speaker1.
+             - A list of category labels for speaker2.
+             - A list of category values for speaker2.
+             - A string representing the call ID.
+
+    :raises IndexError: If the specified row number is out of bounds for the data list.
+
+    Example usage:
+        data = [CallData(call_id='123', call_categories={        ...              'speaker1_categories': [{'name': 'Category1', 'score': 0.5},        ...                                      {'name': 'Category2', 'score': 0.3}],
+        ...              'speaker2_categories': [{'name': 'Category3', 'score': 0.2},        ...                                      {'name': 'Category4', 'score': 0.4}]})]
+        get_labels_value(data, 0)
+        (['Category1', 'Category2'], [0.5, 0.3], ['Category3', 'Category4'], [0.2, 0.4], '123')
+    """
     call = data_list[row]
     data = call.call_categories
     # extract the data for the speaker1 categories
@@ -36,21 +57,11 @@ def visualize(pratica: Pratica):
 
     fig = plt.figure(layout='constrained', figsize=(8, int(len(data_list) * 4)))
     subfigs = fig.subfigures(len(data_list), 1, wspace=0.07)
+
     if isinstance(subfigs, numpy.ndarray):
         for row, subfig in enumerate(subfigs):
             speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call_id = get_labels_value(data_list,
                                                                                                            row)
-            # call = data_list[row]
-            # data = call.call_categories
-            # # extract the data for the speaker1 categories
-            # speaker1_data = data['speaker1_categories']
-            # speaker1_labels = [d['name'] for d in speaker1_data]
-            # speaker1_values = [d['score'] for d in speaker1_data]
-            #
-            # # extract the data for the speaker2 categories
-            # speaker2_data = data['speaker2_categories']
-            # speaker2_labels = [d['name'] for d in speaker2_data]
-            # speaker2_values = [d['score'] for d in speaker2_data]
 
             axs = subfig.subplots(1, 2)
             subfig.suptitle(f"callID: {pratica.id_}_{call_id}")
