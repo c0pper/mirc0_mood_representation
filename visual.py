@@ -41,15 +41,16 @@ def get_labels_value(data_list: list, row: int):
     return speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call.call_id
 
 
+colors = {
+    "distacco": "#00337C",
+    "sintonia": "#1F8A70",
+    "rabbia": "#E90064",
+    "incertezza": "#93C6E7",
+    "preoccupazione": "#FF8B13",
+    "sconforto": "#804674"
+}
+
 def visualize(pratica: Pratica):
-    colors = {
-        "distacco": "#B1AFFF",
-        "sintonia": "#B6E2A1",
-        "rabbia": "#E97777",
-        "incertezza": "#B8E8FC",
-        "preoccupazione": "#FDFDBD",
-        "sconforto": "#80558C"
-    }
 
     data_list = []
     for c in pratica.calls:

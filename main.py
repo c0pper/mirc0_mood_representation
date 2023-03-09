@@ -3,7 +3,7 @@ from visual import visualize
 from pathlib import Path
 
 if __name__ == "__main__":
-    pratiche = Path("pratiche")
+    pratiche = Path("pratiche/json")
     for p in pratiche.glob("*"):
         pratica = Pratica(p)
         visualize(pratica)
