@@ -19,4 +19,4 @@ EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-ENTRYPOINT ["streamlit", "run", "annotations_visual.py", "--server.port=8501", "--server.address=0.0.0.0", "server.enableXsrfProtection=false", "--server.enableCORS=false"]
+ENTRYPOINT ["streamlit", "run", "annotations_visual.py", "--server.port=8501", "--server.address=0.0.0.0", "--browser.serverPort=8501", "--browser.serverAddress=https://temp.simoon.duckdns.org"]
