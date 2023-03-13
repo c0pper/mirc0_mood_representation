@@ -50,6 +50,7 @@ colors = {
     "sconforto": "#804674"
 }
 
+
 def visualize(pratica: Pratica):
 
     data_list = []
@@ -70,10 +71,10 @@ def visualize(pratica: Pratica):
 
             axs[0].pie(speaker1_values, labels=speaker1_labels, autopct='%1.1f%%',
                        colors=[colors[v] for v in speaker1_labels])
-            axs[0].set_title("Speaker1")
+            axs[0].set_title("Operatore")
             axs[1].pie(speaker2_values, labels=speaker2_labels, autopct='%1.1f%%',
                        colors=[colors[v] for v in speaker2_labels])
-            axs[1].set_title("Speaker2")
+            axs[1].set_title("Debitore")
 
         plt.savefig(f"{pratica.id_}.jpg")
 
