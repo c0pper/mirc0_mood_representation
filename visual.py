@@ -4,10 +4,11 @@ from classes import Pratica
 import matplotlib.pyplot as plt
 
 
-def get_labels_value(data_list: list, row: int):
+def get_labels_value(row: int, data_list: list = None, single_call=None):
     """
     Extracts the category labels and values for two speakers from a call's data.
 
+    :param single_call: optional single call
     :param data_list: A list of CallData objects, each containing call data.
     :param row: An integer representing the row number of the call data to extract.
 
@@ -26,8 +27,9 @@ def get_labels_value(data_list: list, row: int):
         get_labels_value(data, 0)
         (['Category1', 'Category2'], [0.5, 0.3], ['Category3', 'Category4'], [0.2, 0.4], '123')
     """
-    call = data_list[row]
-    data = call.call_categories
+    if not single_call:
+        single_call = data_list[row]
+    data = single_call.call_categories
     # extract the data for the speaker1 categories
     speaker1_data = data['speaker1_categories']
     speaker1_labels = [d['name'] for d in speaker1_data]
@@ -38,14 +40,14 @@ def get_labels_value(data_list: list, row: int):
     speaker2_labels = [d['name'] for d in speaker2_data]
     speaker2_values = [d['score'] for d in speaker2_data]
 
-    return speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call.call_id
+    return speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, single_call.call_id
 
 
 colors = {
     "distacco": "#00337C",
     "sintonia": "#1F8A70",
     "rabbia": "#E90064",
-    "incertezza": "#93C6E7",
+    "incertezza": "#95BDFF",
     "preoccupazione": "#FF8B13",
     "sconforto": "#804674"
 }
@@ -62,8 +64,8 @@ def visualize(pratica: Pratica):
 
     if isinstance(subfigs, numpy.ndarray):
         for row, subfig in enumerate(subfigs):
-            speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call_id = get_labels_value(data_list,
-                                                                                                           row)
+            speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call_id = get_labels_value(row,
+                                                                                                           data_list=data_list)
 
             axs = subfig.subplots(1, 2)
             subfig.suptitle(f"callID: {pratica.id_}_{call_id}")
@@ -80,7 +82,8 @@ def visualize(pratica: Pratica):
 
     else:
         row = 0
-        speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call_id = get_labels_value(data_list, row)
+        speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call_id = get_labels_value(row,
+                                                                                                       data_list=data_list)
         figure, axis = plt.subplots(1, 2)
         figure.suptitle(f'callID: {pratica.id_}_{call_id}')
 

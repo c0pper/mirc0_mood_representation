@@ -62,6 +62,7 @@ class Call:
         self.speaker1_txt_path = find_original_txt(pratica.txt_files, speaker1_json_path)
         with open(self.speaker1_txt_path, "r", encoding="utf8") as txt:
             self.speaker1_txt = txt.read()
+            self.speaker1_txt_len = len(self.speaker1_txt)
         self.speaker1_categorization = self.get_categorization(speaker1_json_path)
         self.speaker1_categories = [{"name": i.get("name"), "score": i.get("score")} for i in
                                     self.speaker1_categorization]
@@ -71,6 +72,7 @@ class Call:
         self.speaker2_txt_path = find_original_txt(pratica.txt_files, speaker2_json_path)
         with open(self.speaker2_txt_path, "r", encoding="utf8") as txt:
             self.speaker2_txt = txt.read()
+            self.speaker2_txt_len = len(self.speaker2_txt)
         self.speaker2_categorization = self.get_categorization(speaker2_json_path)
         self.speaker2_categories = [{"name": i.get("name"), "score": i.get("score")} for i in
                                     self.speaker2_categorization]
