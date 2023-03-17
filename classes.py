@@ -24,6 +24,46 @@ def find_original_txt(txt_files, json_path: Path) -> Path:
         if t.stem == str(json_path.stem).split(".")[0]:
             return t
 
+class Domain:
+    def __init__(self, name):
+        self.name = name
+        self.frequency = 0
+        self.rules = list()
+        self.score = 0
+
+    def get_domain_score(self):
+        return sum([rule.score  for rule in self.rules])
+
+
+class Rule:
+    def __init__(self):
+        self.label = ""
+        self.scopes = list()
+        self.score = 0
+
+    def get_rule_score(self):
+        return sum([scope.score  for scope in self.scopes])
+
+
+class Scope:
+    def __init__(self):
+        self.score = 0
+        self.begin = 0
+        self.end = 0
+        self.operands = list()
+
+    def get_scope_text(self, call_txt):
+        return call_txt[self.begin:self.end+1]
+
+
+class Operand:
+    def __init__(self):
+        self.begin = 0
+        self.end = 0
+
+    def get_operand_text(self, call_txt):
+        return call_txt[self.begin:self.end+1]
+
 
 class Pratica:
     def __init__(self, folder_path: Union[Path, str]):
@@ -58,6 +98,7 @@ class Call:
         self.pratica = pratica
         self.call_id = call_id
 
+        # Speaker 1
         self.speaker1_json_path = speaker1_json_path
         self.speaker1_txt_path = find_original_txt(pratica.txt_files, speaker1_json_path)
         with open(self.speaker1_txt_path, "r", encoding="utf8") as txt:
@@ -66,8 +107,10 @@ class Call:
         self.speaker1_categorization = self.get_categorization(speaker1_json_path)
         self.speaker1_categories = [{"name": i.get("name"), "score": i.get("score")} for i in
                                     self.speaker1_categorization]
+        self.speaker1_domain_objects = self.collect_domain_objects(self.speaker1_categorization)
         self.norm_scores(self.speaker1_categories)
 
+        # Speaker 2
         self.speaker2_json_path = speaker2_json_path
         self.speaker2_txt_path = find_original_txt(pratica.txt_files, speaker2_json_path)
         with open(self.speaker2_txt_path, "r", encoding="utf8") as txt:
@@ -76,6 +119,7 @@ class Call:
         self.speaker2_categorization = self.get_categorization(speaker2_json_path)
         self.speaker2_categories = [{"name": i.get("name"), "score": i.get("score")} for i in
                                     self.speaker2_categorization]
+        self.speaker2_domain_objects = self.collect_domain_objects(self.speaker2_categorization)
         self.norm_scores(self.speaker2_categories)
 
         self.call_categories = {
@@ -101,6 +145,51 @@ class Call:
             json_data = json.loads(json_str)
             categorization = json_data["match_info"]["rules"]["categorization"]
             return categorization
+
+    @staticmethod
+    def collect_domain_objects(call_categorization):
+        domain_objects = []
+        for cat in call_categorization:
+            domain = Domain(cat["name"])
+            domain.frequency = cat["frequency"]
+            domain.score = cat["score"]
+            # print(domain.name)
+
+            for rule in cat["rules"]:
+                rule_obj = Rule()
+                rule_obj.label = rule["label"]
+                domain.rules.append(rule_obj)
+                # print(f'\trule label "{rule_obj.label}", rule score {rule_obj.score}')
+
+                for scope in rule["scope"]:
+                    scope_begin = scope["begin"]
+                    scope_end = scope["end"]
+                    scope_score = scope["score"]
+
+                    scope_obj = Scope()
+                    scope_obj.begin = scope_begin
+                    scope_obj.end = scope_end
+                    scope_obj.score = scope_score
+                    rule_obj.scopes.append(scope_obj)
+
+                    # print(f"\t\tscope range {scope_obj.begin} - {scope_obj.end}, score {scope_obj.score}")
+                    # print(f"\t\tscope text: {scope_obj.get_scope_text(call.speaker2_txt)}")
+                    # print("\t\t\tOperands")
+                    for op in scope["operands"]:
+                        op_begin = op["begin"]
+                        op_end = op["end"]
+
+                        op_obj = Operand()
+                        op_obj.end = op_end
+                        op_obj.begin = op_begin
+                        scope_obj.operands.append(op_obj)
+                        # print(f"\t\t\t\toperand range {op_obj.begin} - {op_obj.end}")
+                        # print(f"\t\t\t\toperand text: {op_obj.get_operand_text(call.speaker2_txt)}")
+                rule_obj.score = rule_obj.get_rule_score()
+                # print(f"\trule score{rule_obj.score}")
+            domain_objects.append(domain)
+            # print(f"domain score {domain.score}")
+        return domain_objects
 
     def __str__(self):
         return f"ID: {self.call_id}, Speaker1_json: {self.speaker1_json_path.name}, " \

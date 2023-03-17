@@ -3,7 +3,7 @@ from pathlib import Path
 from classes import Pratica
 from utils import get_category_indexes, get_labels_value
 from matplotlib import pyplot as plt
-from visual import colors
+from visual import colors, quasar_colors
 import config
 from dataclasses import dataclass
 
@@ -87,7 +87,7 @@ def page(p_id: str, call_id: str):
 
 
     with ui.header(elevated=True).style('background-color: #3874c8').classes('items-center justify-between'):
-        ui.label(f"{p_id}/{call_id}").style('color: #FFFFFF; font-size: 200%; font-weight: 300')
+        ui.label(f"{p_id} / {call_id}").style('color: #FFFFFF; font-size: 200%; font-weight: 300')
         with ui.tabs() as tabs:
             ui.tab('Mood PC', icon='sentiment_satisfied')
             ui.tab('Testo PC', icon='article')
@@ -115,26 +115,54 @@ def page(p_id: str, call_id: str):
 
     with ui.tab_panels(tabs, value='Mood PC'):
         with ui.tab_panel('Mood PC'):
-            for start, end, name, scope_score in get_category_indexes(categorization1):
-                ui.label(txt1[start:end + 1]).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[name]}] m-2').tooltip(name)
-                badge = ui.badge(name, color=colors[name])
+            # for start, end, name, scope_score in get_category_indexes(categorization1):
+            #     ui.label(txt1[start:end + 1]).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[name]}] m-2').tooltip(name)
+            #     ui.badge(name, color=quasar_colors[name]).classes("text-base")
+
+            for d in call_obj[0].speaker1_domain_objects:
+                for rule in d.rules:
+                    for scope in rule.scopes:
+                        operands_text = list()
+                        for op in scope.operands:
+                            text = op.get_operand_text(call_obj[0].speaker1_txt)
+                            operands_text.append(text)
+                        with ui.label(scope.get_scope_text(call_obj[0].speaker1_txt)).style(config.TRANSCRIPTION_TEXT_STYLE).classes(
+                            f'rounded-2xl flex bg-[{colors[d.name]}] m-2'):
+                            ui.tooltip(" | ".join(o for o in operands_text)).classes("text-lg")
+                        ui.badge(f"{d.name}, score: {round(scope.score/d.score, 2)}", color=quasar_colors[d.name]).classes("text-base")
+
 
         with ui.tab_panel('Testo PC'):
             for s in txt1.split("\n"):
                 if s in frasi_operatore.keys():
-                    ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_operatore[s]]}] m-2').tooltip(frasi_operatore[s])
+                    with ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_operatore[s]]}] m-2'):
+                        ui.tooltip(frasi_operatore[s]).classes("text-lg")
                 else:
                     ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE)
 
         with ui.tab_panel('Mood Deb'):
-            for start, end, name, scope_score in get_category_indexes(categorization2):
-                ui.label(txt2[start:end + 1]).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[name]}]/90 m-2').tooltip(f"{name}")
-                badge = ui.badge(name, color=colors[name])
+            # for start, end, name, scope_score in get_category_indexes(categorization2):
+            #     ui.label(txt2[start:end + 1]).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[name]}]/90 m-2').tooltip(f"{name}")
+            #     ui.badge(name, color=quasar_colors[name]).classes("text-base")
+
+            for d in call_obj[0].speaker2_domain_objects:
+                for rule in d.rules:
+                    for scope in rule.scopes:
+                        operands_text = list()
+                        for op in scope.operands:
+                            text = op.get_operand_text(call_obj[0].speaker2_txt)
+                            operands_text.append(text)
+                        with ui.label(scope.get_scope_text(call_obj[0].speaker2_txt)).style(config.TRANSCRIPTION_TEXT_STYLE).classes(
+                            f'rounded-2xl flex bg-[{colors[d.name]}] m-2'):
+                            ui.tooltip(" | ".join(o for o in operands_text)).classes("text-lg")
+                        ui.badge(f"{d.name}, score: {round(scope.score/d.score, 2)}", color=quasar_colors[d.name]).classes("text-base")
+
 
         with ui.tab_panel('Testo Deb'):
             for s in txt2.split("\n"):
                 if s in frasi_debitore.keys():
-                    ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_debitore[s]]}] m-2').tooltip(frasi_debitore[s])
+                    with ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_debitore[s]]}] m-2'):
+                        ui.tooltip(frasi_debitore[s]).classes("text-lg")
                 else:
                     ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE)
 
@@ -154,5 +182,4 @@ def page(p_id: str, call_id: str):
                         plt.title("Debitore", color="white")
 
 
-if __name__ == '__main__':
-    ui.run()
+ui.run()

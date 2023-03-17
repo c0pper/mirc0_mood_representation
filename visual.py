@@ -9,11 +9,19 @@ colors = {
     "distacco": "#00337C",
     "sintonia": "#1F8A70",
     "rabbia": "#E90064",
-    "incertezza": "#95BDFF",
-    "preoccupazione": "#FF8B13",
-    "sconforto": "#804674"
+    "incertezza": "#607d8b",
+    "preoccupazione": "#ff9800",
+    "sconforto": "#7b1fa2"
 }
 
+quasar_colors = {
+    "distacco": "indigo-8",
+    "sintonia": "teal-6",
+    "rabbia": "pink-13",
+    "incertezza": "blue-grey-6",
+    "preoccupazione": "orange-6",
+    "sconforto": "purple-8"
+}
 
 def visualize(pratica: Pratica):
 
