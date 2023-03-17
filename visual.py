@@ -2,45 +2,7 @@ import numpy
 
 from classes import Pratica
 import matplotlib.pyplot as plt
-
-
-def get_labels_value(row: int, data_list: list = None, single_call=None):
-    """
-    Extracts the category labels and values for two speakers from a call's data.
-
-    :param single_call: optional single call
-    :param data_list: A list of CallData objects, each containing call data.
-    :param row: An integer representing the row number of the call data to extract.
-
-    :return: A tuple containing the following five items:
-             - A list of category labels for speaker1.
-             - A list of category values for speaker1.
-             - A list of category labels for speaker2.
-             - A list of category values for speaker2.
-             - A string representing the call ID.
-
-    :raises IndexError: If the specified row number is out of bounds for the data list.
-
-    Example usage:
-        data = [CallData(call_id='123', call_categories={        ...              'speaker1_categories': [{'name': 'Category1', 'score': 0.5},        ...                                      {'name': 'Category2', 'score': 0.3}],
-        ...              'speaker2_categories': [{'name': 'Category3', 'score': 0.2},        ...                                      {'name': 'Category4', 'score': 0.4}]})]
-        get_labels_value(data, 0)
-        (['Category1', 'Category2'], [0.5, 0.3], ['Category3', 'Category4'], [0.2, 0.4], '123')
-    """
-    if not single_call:
-        single_call = data_list[row]
-    data = single_call.call_categories
-    # extract the data for the speaker1 categories
-    speaker1_data = data['speaker1_categories']
-    speaker1_labels = [d['name'] for d in speaker1_data]
-    speaker1_values = [d['score'] for d in speaker1_data]
-
-    # extract the data for the speaker2 categories
-    speaker2_data = data['speaker2_categories']
-    speaker2_labels = [d['name'] for d in speaker2_data]
-    speaker2_values = [d['score'] for d in speaker2_data]
-
-    return speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, single_call.call_id
+from utils import get_labels_value
 
 
 colors = {
@@ -78,7 +40,8 @@ def visualize(pratica: Pratica):
                        colors=[colors[v] for v in speaker2_labels])
             axs[1].set_title("Debitore")
 
-        plt.savefig(f"{pratica.id_}.jpg")
+        # plt.savefig(f"{pratica.id_}.jpg")
+        return plt
 
     else:
         row = 0
@@ -94,4 +57,6 @@ def visualize(pratica: Pratica):
         axis[1].pie(speaker2_values, labels=speaker2_labels, autopct='%1.1f%%',
                     colors=[colors[v] for v in speaker2_labels])
         axis[1].set_title("Speaker2")
-        plt.savefig(f"{pratica.id_}.jpg")
+        # plt.savefig(f"{pratica.id_}.jpg")
+
+        return plt

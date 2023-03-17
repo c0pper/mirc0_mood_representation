@@ -6,7 +6,7 @@ from visual import colors
 from visual import get_labels_value
 import plotly.express as px
 import legenda
-from utils import get_missing_tuples, get_category_indexes
+from utils import get_category_indexes
 
 
 st.set_page_config(layout="wide")
@@ -31,6 +31,7 @@ call_obj = [c for c in calls if c.call_id == call]
 
 speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call_id = get_labels_value(row=0, data_list=call_obj)
 print(speaker1_labels, speaker1_values, speaker2_labels, speaker2_values, call_id)
+
 categorization1 = call_obj[0].speaker1_categorization
 txt1 = call_obj[0].speaker1_txt
 
@@ -82,7 +83,7 @@ with st.container():
         # for c in get_category_indexes(categorization1):
         #     c.find_missing_tuples()
         # print(get_missing_tuples(get_category_indexes(categorization1), call_obj[0].speaker1_txt_len))
-        for start, end, name in get_category_indexes(categorization1):
+        for start, end, name, _ in get_category_indexes(categorization1):
             annotated_text((txt1[start:end + 1], name, colors[name]))
             st.text("")
 
@@ -106,6 +107,6 @@ with st.container():
         #         print(call_obj[0].speaker2_txt[tup[0]:tup[1]], tup[2])
         #     except IndexError:
         #         print(call_obj[0].speaker2_txt[tup[0]:tup[1]])
-        for start, end, name in get_category_indexes(categorization2):
+        for start, end, name, _ in get_category_indexes(categorization2):
             annotated_text((txt2[start:end + 1], name, colors[name]))
             st.text("")
