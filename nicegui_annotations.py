@@ -89,11 +89,11 @@ def page(p_id: str, call_id: str):
     with ui.header(elevated=True).style('background-color: #3874c8').classes('items-center justify-between'):
         ui.label(f"{p_id} / {call_id}").style('color: #FFFFFF; font-size: 200%; font-weight: 300')
         with ui.tabs() as tabs:
+            ui.tab('graphs', icon='pie_chart_outlined')
             ui.tab('Mood PC', icon='sentiment_satisfied')
             ui.tab('Testo PC', icon='article')
             ui.tab('Mood Deb', icon='sentiment_satisfied')
             ui.tab('Testo Deb', icon='article')
-            ui.tab('graphs', icon='pie_chart_outlined')
         ui.button(on_click=lambda: left_drawer.toggle()).props('flat color=white icon=menu')
     with ui.left_drawer(top_corner=True, bottom_corner=True).style('background-color: #000000') as left_drawer:
         ui.label('Pratiche')
@@ -113,7 +113,21 @@ def page(p_id: str, call_id: str):
     for start, end, name, scope_score in get_category_indexes(categorization2):
         frasi_debitore[txt2[start:end + 1]] = name
 
-    with ui.tab_panels(tabs, value='Mood PC'):
+    with ui.tab_panels(tabs, value='graphs'):
+        with ui.tab_panel('graphs'):
+            with ui.row():
+                with ui.column():
+                    with ui.pyplot(figsize=(8, 6), facecolor="#1d1d1d"):
+                        plt.pie(speaker1_values, labels=speaker1_labels, colors=[colors[v] for v in speaker1_labels],
+    autopct='%1.1f%%', textprops={'color':"w"})
+                        plt.title("Operatore", color="white")
+                with ui.column():
+                    with ui.pyplot(figsize=(8, 6), facecolor="#1d1d1d"):
+                        plt.pie(speaker2_values, labels=speaker2_labels, colors=[colors[v] for v in speaker2_labels],
+    autopct='%1.1f%%', textprops={'color':"w"})
+                        plt.title("Debitore", color="white")
+
+
         with ui.tab_panel('Mood PC'):
             # for start, end, name, scope_score in get_category_indexes(categorization1):
             #     ui.label(txt1[start:end + 1]).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[name]}] m-2').tooltip(name)
@@ -165,21 +179,6 @@ def page(p_id: str, call_id: str):
                         ui.tooltip(frasi_debitore[s]).classes("text-lg")
                 else:
                     ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE)
-
-        with ui.tab_panel('graphs'):
-            with ui.row():
-                with ui.column():
-                    with ui.pyplot(figsize=(8, 6), facecolor="#1d1d1d"):
-
-
-                        plt.pie(speaker1_values, labels=speaker1_labels, colors=[colors[v] for v in speaker1_labels],
-    autopct='%1.1f%%', textprops={'color':"w"})
-                        plt.title("Operatore", color="white")
-                with ui.column():
-                    with ui.pyplot(figsize=(8, 6), facecolor="#1d1d1d"):
-                        plt.pie(speaker2_values, labels=speaker2_labels, colors=[colors[v] for v in speaker2_labels],
-    autopct='%1.1f%%', textprops={'color':"w"})
-                        plt.title("Debitore", color="white")
 
 
 ui.run()
