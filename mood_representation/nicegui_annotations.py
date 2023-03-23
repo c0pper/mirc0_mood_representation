@@ -9,7 +9,6 @@ from dataclasses import dataclass
 
 
 
-
 @dataclass
 class Navigator:
     pratica_id: str
@@ -140,7 +139,8 @@ def page(p_id: str, call_id: str):
                         for op in scope.operands:
                             text = op.get_operand_text(call_obj[0].speaker1_txt)
                             operands_text.append(text)
-                        with ui.label(scope.get_scope_text(call_obj[0].speaker1_txt)).style(config.TRANSCRIPTION_TEXT_STYLE).classes(
+                        with ui.label(scope.get_scope_text(call_obj[0].speaker1_txt)).style(
+                                config.TRANSCRIPTION_TEXT_STYLE).classes(
                             f'rounded-2xl flex bg-[{colors[d.name]}] m-2'):
                             ui.tooltip(" | ".join(o for o in operands_text)).classes("text-lg")
                         ui.badge(f"{d.name}, score: {round(scope.score/d.score, 2)}", color=quasar_colors[d.name]).classes("text-base")
@@ -149,7 +149,8 @@ def page(p_id: str, call_id: str):
         with ui.tab_panel('Testo PC'):
             for s in txt1.split("\n"):
                 if s in frasi_operatore.keys():
-                    with ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_operatore[s]]}] m-2'):
+                    with ui.label(s).style(
+                            config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_operatore[s]]}] m-2'):
                         ui.tooltip(frasi_operatore[s]).classes("text-lg")
                 else:
                     ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE)
@@ -166,7 +167,8 @@ def page(p_id: str, call_id: str):
                         for op in scope.operands:
                             text = op.get_operand_text(call_obj[0].speaker2_txt)
                             operands_text.append(text)
-                        with ui.label(scope.get_scope_text(call_obj[0].speaker2_txt)).style(config.TRANSCRIPTION_TEXT_STYLE).classes(
+                        with ui.label(scope.get_scope_text(call_obj[0].speaker2_txt)).style(
+                                config.TRANSCRIPTION_TEXT_STYLE).classes(
                             f'rounded-2xl flex bg-[{colors[d.name]}] m-2'):
                             ui.tooltip(" | ".join(o for o in operands_text)).classes("text-lg")
                         ui.badge(f"{d.name}, score: {round(scope.score/d.score, 2)}", color=quasar_colors[d.name]).classes("text-base")
@@ -175,7 +177,8 @@ def page(p_id: str, call_id: str):
         with ui.tab_panel('Testo Deb'):
             for s in txt2.split("\n"):
                 if s in frasi_debitore.keys():
-                    with ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_debitore[s]]}] m-2'):
+                    with ui.label(s).style(
+                            config.TRANSCRIPTION_TEXT_STYLE).classes(f'rounded-2xl flex bg-[{colors[frasi_debitore[s]]}] m-2'):
                         ui.tooltip(frasi_debitore[s]).classes("text-lg")
                 else:
                     ui.label(s).style(config.TRANSCRIPTION_TEXT_STYLE)
